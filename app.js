@@ -739,6 +739,9 @@
     if (code.includes("resource-exhausted")) {
       return "Kuota Firebase/Firestore habis atau dibatasi. Cek Usage di Firebase Console.";
     }
+    if (lower.includes("is not defined") || lower.includes("referenceerror")) {
+      return `Kesalahan kode aplikasi${suffix}: ${message.slice(0, 160)}. Pakai file app.js versi terbaru.`;
+    }
     return `Gagal konek Firebase${suffix}. ${message ? message.slice(0, 140) : "Cek Anonymous Auth, Firestore Rules, domain deploy, dan koneksi internet."}`;
   }
 
@@ -1207,7 +1210,9 @@
     const list = byId("officersList");
     if (!list) return;
     const names = new Set();
-    [...gradingData, ...tdData].forEach((row) => {
+    const gradingRows = Array.isArray(state.grading) ? state.grading : [];
+    const tdRows = Array.isArray(state.td) ? state.td : [];
+    [...gradingRows, ...tdRows].forEach((row) => {
       const officer = String(row.officer || row.createdBy || "").trim();
       if (officer) names.add(officer);
     });
